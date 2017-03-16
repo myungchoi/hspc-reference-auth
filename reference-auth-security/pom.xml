@@ -1,0 +1,151 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.hspconsortium</groupId>
+        <artifactId>reference-auth-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>org.hspconsortium.reference</groupId>
+    <artifactId>hspc-reference-auth-security</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Reference Auth - Security</name>
+    <description>Libraries for creating an HSPC compliant launch context</description>
+    <url>https://healthservices.atlassian.net/wiki/display/HSPC/Healthcare+Services+Platform+Consortium</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@bitbucket.org/hspconsortium/reference-auth-security.git</connection>
+        <developerConnection>scm:git:ssh://git@bitbucket.org/hspconsortium/reference-auth-security.git
+        </developerConnection>
+        <url>https://bitbucket.org/hspconsortium/reference-auth-security.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <artifactId>spring-web</artifactId>
+                <groupId>org.springframework</groupId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-webmvc</artifactId>
+                <groupId>org.springframework</groupId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-jdbc</artifactId>
+                <groupId>org.springframework</groupId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-tx</artifactId>
+                <groupId>org.springframework</groupId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-security-oauth2</artifactId>
+                <groupId>org.springframework.security.oauth</groupId>
+                <version>${mitreid.springframework.security.oauth.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>slf4j-api</artifactId>
+                <groupId>org.slf4j</groupId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-security-config</artifactId>
+                <groupId>org.springframework.security</groupId>
+                <version>${mitreid.springframework.security.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>spring-security-web</artifactId>
+                <groupId>org.springframework.security</groupId>
+                <version>${mitreid.springframework.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${mitreid.springframework.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${mitreid.springframework.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${mitreid.springframework.security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mitre</groupId>
+            <artifactId>openid-connect-client</artifactId>
+            <version>${mitreid.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
