@@ -10,7 +10,7 @@
         <version>0.4</version>
     </parent>
 
-    <groupId>org.hspconsortium</groupId>
+    <groupId>org.hspconsortium.reference</groupId>
     <artifactId>reference-auth-parent</artifactId>
     <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
