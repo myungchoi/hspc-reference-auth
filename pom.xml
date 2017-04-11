@@ -7,11 +7,11 @@
     <parent>
         <groupId>org.hspconsortium.release</groupId>
         <artifactId>hspc-release</artifactId>
-        <version>0.4</version>
+        <version>0.6</version>
     </parent>
 
     <groupId>org.hspconsortium.reference</groupId>
-    <artifactId>reference-auth-parent</artifactId>
+    <artifactId>hspc-reference-auth-parent</artifactId>
     <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
