@@ -42,8 +42,8 @@
 
     <!-- override -->
     <security:authentication-manager id="clientAuthenticationManager">
-        <security:authentication-provider user-service-ref="smartClientUserDetailsService" />
-        <security:authentication-provider user-service-ref="uriEncodedClientUserDetailsService" />
+        <security:authentication-provider user-service-ref="smartClientUserDetailsService"/>
+        <security:authentication-provider user-service-ref="uriEncodedClientUserDetailsService"/>
     </security:authentication-manager>
 
     <beans profile="local">
@@ -62,7 +62,10 @@
                 <mvc:mapping path="/**/introspect"/>
                 <bean class="org.hspconsortium.platform.authorization.launchcontext.LaunchContextIntrospectionInterceptor"/>
             </mvc:interceptor>
+            <mvc:interceptor>
+                <mvc:mapping path="/**"/>
+                <bean class="org.hspconsortium.platform.authentication.persona.PersonaAuthInterceptor"/>
+            </mvc:interceptor>
         </mvc:interceptors>
     </beans>
-
 </beans>

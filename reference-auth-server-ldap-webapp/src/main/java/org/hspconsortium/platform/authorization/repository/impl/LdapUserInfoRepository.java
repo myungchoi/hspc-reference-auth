@@ -30,6 +30,8 @@ import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.Filter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -170,6 +172,23 @@ public class LdapUserInfoRepository implements UserInfoRepository {
 
 	@Override
 	public UserInfo getByUsername(String username) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if(username.equals("username")){
+			UserInfo userInfo = new DefaultUserInfo();
+			userInfo.setEmail("username@example.com");
+			userInfo.setGivenName("GivenName");
+			userInfo.setName("Name");
+			userInfo.setPreferredUsername("PreferredUsername");
+			userInfo.setSub("The Sub");
+			return userInfo;
+		} else if(username.equals("dan@mikerando4")){
+			System.out.println("userinfo was called with dan.");
+		} else {
+			System.out.println("Userinfo hit without being faked.");
+		}
+
 		try {
 			return cache.get(username);
 		} catch (UncheckedExecutionException ue) {

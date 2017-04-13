@@ -30,6 +30,7 @@
         <junit.version>4.8.2</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <javax.inject.version>1</javax.inject.version>
+        <jjwt.version>0.7.0</jjwt.version>
     </properties>
 
     <modules>
@@ -125,6 +126,11 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
