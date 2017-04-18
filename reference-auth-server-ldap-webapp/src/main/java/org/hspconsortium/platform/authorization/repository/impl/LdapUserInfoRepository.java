@@ -23,15 +23,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import org.hspconsortium.platform.authentication.persona.PersonaUserInfoRepository;
 import org.mitre.openid.connect.model.DefaultUserInfo;
 import org.mitre.openid.connect.model.UserInfo;
-import org.mitre.openid.connect.repository.UserInfoRepository;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.Filter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -42,166 +40,100 @@ import java.util.concurrent.TimeUnit;
 /**
  * Looks up the user information from an LDAP template and maps the results
  * into a UserInfo object. This object is then cached.
- * 
- * @author jricher
  *
+ * @author jricher
  */
 
 // TODO: Make this class more pluggable and configurable
 
-public class LdapUserInfoRepository implements UserInfoRepository {
-	private String ldapUserCacheDurationMs = "2000";
+public class LdapUserInfoRepository extends PersonaUserInfoRepository {
 
-	private LdapTemplate ldapTemplate;
+    private LdapTemplate ldapTemplate;
 
-	public LdapTemplate getLdapTemplate() {
-		return ldapTemplate;
-	}
+    public LdapTemplate getLdapTemplate() {
+        return ldapTemplate;
+    }
 
-	public void setLdapTemplate(LdapTemplate ldapTemplate) {
-		this.ldapTemplate = ldapTemplate;
-	}
+    public void setLdapTemplate(LdapTemplate ldapTemplate) {
+        this.ldapTemplate = ldapTemplate;
+    }
 
-	public String getLdapUserCacheDurationMs() {
-		return ldapUserCacheDurationMs;
-	}
+    @Override
+    public UserInfo getRealUserByUsername(String username) {
+        Filter find = new EqualsFilter("uid", username);
+        List res = ldapTemplate.search("", find.encode(), attributesMapper);
 
-	public void setLdapUserCacheDurationMs(String ldapUserCacheDurationMs) {
-		this.ldapUserCacheDurationMs = ldapUserCacheDurationMs;
-	}
+        if (res.isEmpty()) {
+            // user not found
+            return null;
+        } else if (res.size() == 1) {
+            // exactly one user found, return them
+            return (UserInfo) res.get(0);
+        } else {
+            // more than one user found, error
+            throw new IllegalArgumentException("User not found: " + username);
+        }
+    }
 
-	//
-	// This code does the heavy lifting that maps the LDAP attributes into UserInfo attributes
-	//
-	
-	private AttributesMapper attributesMapper = new AttributesMapper() {
-		@Override
-		public Object mapFromAttributes(Attributes attr) throws NamingException {
+    private AttributesMapper attributesMapper = new AttributesMapper() {
+        @Override
+        public Object mapFromAttributes(Attributes attr) throws NamingException {
 
-			if (attr.get("uid") == null) {
-				return null; // we can't go on if there's no UID to look up
-			}
-			
-			UserInfo ui = new DefaultUserInfo();
-			
-			// save the UID as the preferred username
-			ui.setPreferredUsername(attr.get("uid").get().toString());
-			
-			// for now we use the UID as the subject as well (this should probably be different)
-			ui.setSub(attr.get("uid").get().toString());
-			
-			
-			// add in the optional fields
-			
-			// email address
-			if (attr.get("mail") != null) {
-				ui.setEmail(attr.get("mail").get().toString());
-				// if this domain also provisions email addresses, this should be set to true
-				ui.setEmailVerified(false);
-			}
-			
-			// phone number
-			if (attr.get("telephoneNumber") != null) {
-				ui.setPhoneNumber(attr.get("telephoneNumber").get().toString());
-				// if this domain also provisions phone numbers, this should be set to true
-				ui.setPhoneNumberVerified(false);
-			}
-			
-			// name structure
-			if (attr.get("displayName") != null) {
-				ui.setName(attr.get("displayName").get().toString());
-			}
-			
-			if (attr.get("givenName") != null) {
-				ui.setGivenName(attr.get("givenName").get().toString());
-			}
-			
-			if (attr.get("sn") != null) {
-				ui.setFamilyName(attr.get("sn").get().toString());
-			}
-			
-			if (attr.get("initials") != null) {
-				ui.setMiddleName(attr.get("initials").get().toString());
-			}
+            if (attr.get("uid") == null) {
+                return null; // we can't go on if there's no UID to look up
+            }
 
-			if (attr.get("labeledURI") != null) {
-				ui.setProfile(attr.get("labeledURI").get().toString());
-			}
+            UserInfo ui = new DefaultUserInfo();
 
-			if (attr.get("organizationName") != null) {
-				ui.setWebsite(attr.get("organizationName").get().toString());
-			}
+            // save the UID as the preferred username
+            ui.setPreferredUsername(attr.get("uid").get().toString());
 
-			return ui;
-			
-		}
-	};
-	
-	// lookup result cache, key from username to userinfo
-	private LoadingCache<String, UserInfo> cache;
+            // for now we use the UID as the subject as well (this should probably be different)
+            ui.setSub(attr.get("uid").get().toString());
 
-	private CacheLoader<String, UserInfo> cacheLoader = new CacheLoader<String, UserInfo>() {
-		@Override
-		public UserInfo load(String username) throws Exception {
-			
-			Filter find = new EqualsFilter("uid", username);
-			List res = ldapTemplate.search("", find.encode(), attributesMapper);
-			
-			if (res.isEmpty()) {
-				// user not found, error
-				throw new IllegalArgumentException("User not found: " + username);
-			} else if (res.size() == 1) {
-				// exactly one user found, return them
-				return (UserInfo) res.get(0);
-			} else {
-				// more than one user found, error
-				throw new IllegalArgumentException("User not found: " + username);
-			}
-			
-		}
-		
-	};
-	
-	
-	public LdapUserInfoRepository() {
-		this.cache = CacheBuilder.newBuilder()
-					.maximumSize(1000)
-					.expireAfterAccess(Integer.parseInt(ldapUserCacheDurationMs), TimeUnit.MILLISECONDS)
-				.build(cacheLoader);
-	}
 
-	@Override
-	public UserInfo getByUsername(String username) {
+            // add in the optional fields
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            // email address
+            if (attr.get("mail") != null) {
+                ui.setEmail(attr.get("mail").get().toString());
+                // if this domain also provisions email addresses, this should be set to true
+                ui.setEmailVerified(false);
+            }
 
-		if(username.equals("username")){
-			UserInfo userInfo = new DefaultUserInfo();
-			userInfo.setEmail("username@example.com");
-			userInfo.setGivenName("GivenName");
-			userInfo.setName("Name");
-			userInfo.setPreferredUsername("PreferredUsername");
-			userInfo.setSub("The Sub");
-			return userInfo;
-		} else if(username.equals("dan@mikerando4")){
-			System.out.println("userinfo was called with dan.");
-		} else {
-			System.out.println("Userinfo hit without being faked.");
-		}
+            // phone number
+            if (attr.get("telephoneNumber") != null) {
+                ui.setPhoneNumber(attr.get("telephoneNumber").get().toString());
+                // if this domain also provisions phone numbers, this should be set to true
+                ui.setPhoneNumberVerified(false);
+            }
 
-		try {
-			return cache.get(username);
-		} catch (UncheckedExecutionException ue) {
-			return null;
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+            // name structure
+            if (attr.get("displayName") != null) {
+                ui.setName(attr.get("displayName").get().toString());
+            }
 
-	@Override
-	public UserInfo getByEmailAddress(String email) {
-		return null;
-	}
+            if (attr.get("givenName") != null) {
+                ui.setGivenName(attr.get("givenName").get().toString());
+            }
 
+            if (attr.get("sn") != null) {
+                ui.setFamilyName(attr.get("sn").get().toString());
+            }
+
+            if (attr.get("initials") != null) {
+                ui.setMiddleName(attr.get("initials").get().toString());
+            }
+
+            if (attr.get("labeledURI") != null) {
+                ui.setProfile(attr.get("labeledURI").get().toString());
+            }
+
+            if (attr.get("organizationName") != null) {
+                ui.setWebsite(attr.get("organizationName").get().toString());
+            }
+
+            return ui;
+        }
+    };
 }

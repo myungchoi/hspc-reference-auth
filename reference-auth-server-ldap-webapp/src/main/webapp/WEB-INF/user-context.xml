@@ -106,13 +106,4 @@
 
     <bean id="personaSessionRepo" class="org.hspconsortium.platform.authentication.persona.PersonaHttpSessionSecurityContextRepository"/>
 
-    <!--<bean id="customFilters" class="org.springframework.web.filter.CompositeFilter">-->
-        <!--<property name="filters">-->
-            <!--<list>-->
-                <!--<ref bean="authRequestFilter"/>-->
-                <!--<ref bean="jwtFilter"/>-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
 </beans>

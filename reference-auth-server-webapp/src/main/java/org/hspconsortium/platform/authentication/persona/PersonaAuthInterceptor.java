@@ -1,7 +1,6 @@
 package org.hspconsortium.platform.authentication.persona;
 
 import org.hspconsortium.platform.service.JwtService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,7 +11,6 @@ import javax.inject.Inject;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +38,9 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
 
     private void removePersonaCookie(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
+        if(httpServletRequest.getCookies() == null)
+            return;
+
         for (Cookie cookie : httpServletRequest.getCookies()) {
             if (cookie.getName().equals(HSPC_PERSONA_TOKEN_NAME)) {
                 cookie.setDomain("");
@@ -64,14 +65,14 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
             return;
         }
 
-        UsernamePasswordAuthenticationToken personaAuthentication = generatePersonaAuthentication(hspcPersonaTokenCookie.getValue());
+        PersonaAuthenticationToken personaAuthentication = generatePersonaAuthentication(hspcPersonaTokenCookie.getValue());
 
         SecurityContext personaSecurityContext = SecurityContextHolder.createEmptyContext();
         personaSecurityContext.setAuthentication(personaAuthentication);
         SecurityContextHolder.setContext(personaSecurityContext);
     }
 
-    private UsernamePasswordAuthenticationToken generatePersonaAuthentication(String personaJwtString) {
+    private PersonaAuthenticationToken generatePersonaAuthentication(String personaJwtString) {
 
         String username = jwtService.usernameFromJwt(personaJwtString);
 
@@ -81,6 +82,6 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
 
         List<SimpleGrantedAuthority> personaAuthorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         User personaUser = new User(username, "password", personaAuthorities);
-        return new UsernamePasswordAuthenticationToken(personaUser, null, personaAuthorities);
+        return new PersonaAuthenticationToken(personaUser, null, personaAuthorities);
     }
 }

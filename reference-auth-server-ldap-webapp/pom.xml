@@ -58,6 +58,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.hspconsortium.reference</groupId>
+            <artifactId>hspc-reference-auth-server-webapp</artifactId>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+        </dependency>
+        <dependency>
             <groupId>org.mitre</groupId>
             <artifactId>openid-connect-common</artifactId>
             <version>${mitreid.version}</version>
