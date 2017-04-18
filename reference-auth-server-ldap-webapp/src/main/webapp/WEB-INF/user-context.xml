@@ -79,7 +79,7 @@
 
     <!-- end LDAP -->
 
-    <mvc:view-controller path="/login" view-name="login"/>
+    <mvc:view-controller path="/login" view-name="login" />
 
     <bean id="promptFilter" class="org.mitre.openid.connect.filter.AuthorizationRequestFilter"/>
 

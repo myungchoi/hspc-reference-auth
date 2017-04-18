@@ -105,9 +105,11 @@
             var username = $('#j_username').val();
             var password = $('#j_password').val();
 
+            var personaAuthEndpoint = "<spring:eval expression="@authProperties.getProperty('hspc.platform.sandbox.host')"/><spring:eval expression="@authProperties.getProperty('hspc.platform.sandbox.personaAuthPath')"/>";
+
             $.ajax({
                 type: "POST",
-                url: "http://localhost:8080/hspc-sandbox-manager/REST/userPersona/authenticate",
+                url: personaAuthEndpoint,
                 data: JSON.stringify({
                     "username": username,
                     "password": password
