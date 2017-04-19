@@ -61,15 +61,8 @@
                 </div>
                 <input id="redirectUrl" type="hidden" name="redirectUrl"
                        value="<%= savedRequest == null ? "" : savedRequest.getRequestURL() + "?" + savedRequest.getQueryString() %>"/>
-                <div id="isPersonaLoginWrapper" hidden="hidden">
-                    <label class="checkbox">
-                        <input id="isPersonaLogin" name="isPersonaLogin" type="checkbox">
-                        This is a persona user <a href="https://healthservices.atlassian.net/wiki/x/BAC7B"
-                                                  target="_blank"><i class="icon-question-sign"></i></a>
-                    </label>
-                </div>
                 <div>
-                    <input type="submit" class="btn-block login-form-btn" value="Sign in" name="submit">
+                    <input id="submitButton" type="submit" class="btn-block login-form-btn" value="Sign in" name="submit">
                 </div>
                 <div>
 					<span class="help-block pull-left">
@@ -94,17 +87,14 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-        if ($('#redirectUrl').val().length > 0)
-            $('#isPersonaLoginWrapper').show();
-    });
+    var personaAttemptFailed = false;
 
     $('#loginForm').submit(function (e) {
-        if ($('#isPersonaLogin').is(':checked')) {
-            e.preventDefault();
-            var username = $('#j_username').val();
-            var password = $('#j_password').val();
+        var username = $('#j_username').val();
+        var password = $('#j_password').val();
 
+        if (username && username.length && looksLikePersona(username)) {
+            e.preventDefault();
             var personaAuthEndpoint = "<spring:eval expression="@authProperties.getProperty('hspc.platform.sandbox.host')"/><spring:eval expression="@authProperties.getProperty('hspc.platform.sandbox.personaAuthPath')"/>";
 
             $.ajax({
@@ -122,6 +112,11 @@
         }
     });
 
+    function looksLikePersona(username){
+        var personaRegex = /^[a-zA-Z0-9]{1,50}@[a-zA-Z0-9]{1,20}$/;
+        return !personaAttemptFailed && username.match(personaRegex) !== null;
+    }
+
     function personaAuthResponse(response) {
         if (!response.jwt || response.jwt.length < 1) {
             updateErrorMessage("Error authenticating persona user.");
@@ -135,7 +130,9 @@
     }
 
     function personaAuthFailure(response) {
-        updateErrorMessage(response.responseJSON.message);
+        // persona auth failed, try logging in as a real user
+        personaAttemptFailed = true;
+        $('#submitButton').click();
     }
 
     function updateErrorMessage(message) {

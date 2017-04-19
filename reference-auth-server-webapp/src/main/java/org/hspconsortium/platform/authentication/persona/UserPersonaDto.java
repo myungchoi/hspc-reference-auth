@@ -1,8 +1,5 @@
 package org.hspconsortium.platform.authentication.persona;
 
-/**
- * Created by mike on 4/15/17.
- */
 public class UserPersonaDto {
     private String username;
     private String name;

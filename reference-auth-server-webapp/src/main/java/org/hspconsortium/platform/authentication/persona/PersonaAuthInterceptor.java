@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by mike on 4/12/17.
- */
 public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
 
     public static final String HSPC_PERSONA_TOKEN_NAME = "hspc-persona-token";

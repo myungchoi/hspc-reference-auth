@@ -18,9 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by mike on 4/9/17.
- */
 public class JwtFilter extends GenericFilterBean {
 
     private final Logger log = LoggerFactory.getLogger(JwtFilter.class);
