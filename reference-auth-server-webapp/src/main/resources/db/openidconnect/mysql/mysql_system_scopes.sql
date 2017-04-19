@@ -55,8 +55,9 @@ INSERT INTO system_scope (scope, description, structured, default_scope, restric
   ('patient/Observation.read', 'Read all Observations for a given patient', false, false, false),
   ('patient/Observation.write', 'Write all Observations for a given patient', false, false, false),
   ('patient/Patient.read', 'Read all Patients for a given patient', false, false, false),
-  ('patient/Patient.write', 'Write all Patients for a given patient', false, false, false);
-
+  ('patient/Patient.write', 'Write all Patients for a given patient', false, false, false),
+  ('offline_access', 'Allows the app to maintain authorization even when the app is offline.', false, false, false),
+  ('online_access', 'Allows the app to maintain authorization as long as the app is online.', false, false, false);
 
 
 COMMIT;
