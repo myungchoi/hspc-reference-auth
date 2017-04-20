@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.hspconsortium.reference</groupId>
         <artifactId>hspc-reference-auth-parent</artifactId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -26,66 +26,6 @@
     <properties>
         <artifact.name>hspc-reference-auth-server-webapp</artifact.name>
     </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <artifactId>spring-web</artifactId>
-                <groupId>org.springframework</groupId>
-                <version>${mitreid.springframework.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>spring-webmvc</artifactId>
-                <groupId>org.springframework</groupId>
-                <version>${mitreid.springframework.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>spring-jdbc</artifactId>
-                <groupId>org.springframework</groupId>
-                <version>${mitreid.springframework.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>spring-security-oauth2</artifactId>
-                <groupId>org.springframework.security.oauth</groupId>
-                <version>${mitreid.springframework.security.oauth.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>slf4j-api</artifactId>
-                <groupId>org.slf4j</groupId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>spring-security-config</artifactId>
-                <groupId>org.springframework.security</groupId>
-                <version>${mitreid.springframework.security.version}</version>
-            </dependency>
-            <dependency>
-                <artifactId>spring-security-web</artifactId>
-                <groupId>org.springframework.security</groupId>
-                <version>${mitreid.springframework.security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <version>${mitreid.springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-core</artifactId>
-                <version>${mitreid.springframework.security.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${mitreid.springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${mitreid.springframework.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -170,6 +110,10 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>${javax.inject.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
         </dependency>
     </dependencies>
 
@@ -282,6 +226,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <attachClasses>true</attachClasses>
                     <overlays>
                         <overlay>
                             <groupId>org.mitre</groupId>

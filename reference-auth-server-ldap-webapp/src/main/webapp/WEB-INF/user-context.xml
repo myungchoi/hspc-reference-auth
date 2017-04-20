@@ -79,7 +79,7 @@
 
     <!-- end LDAP -->
 
-    <mvc:view-controller path="/login" view-name="login"/>
+    <mvc:view-controller path="/login" view-name="login" />
 
     <bean id="promptFilter" class="org.mitre.openid.connect.filter.AuthorizationRequestFilter"/>
 
@@ -91,12 +91,11 @@
         <property name="targetUrlParameter" value="${LOGOUT_SUCCESS_URL_PROPERTY}"/>
     </bean>
 
-    <security:http disable-url-rewriting="true" use-expressions="true">
+    <security:http disable-url-rewriting="true" use-expressions="true" security-context-repository-ref="personaSessionRepo">
         <security:form-login login-page="/login" authentication-failure-url="/login?error=failure"
                              authentication-success-handler-ref="authenticationTimeStamper"/>
         <security:intercept-url pattern="/**" access="permitAll"/>
         <security:custom-filter ref="authRequestFilter" after="SECURITY_CONTEXT_FILTER" />
-        <!--<security:custom-filter ref="promptFilter" after="SECURITY_CONTEXT_FILTER"/>-->
         <security:logout logout-url="/logout" success-handler-ref="logoutSuccessHandler"/>
         <security:anonymous/>
         <security:expression-handler ref="oauthWebExpressionHandler"/>
@@ -104,5 +103,7 @@
             <security:frame-options policy="DENY"/>
         </security:headers>
     </security:http>
+
+    <bean id="personaSessionRepo" class="org.hspconsortium.platform.authentication.persona.PersonaHttpSessionSecurityContextRepository"/>
 
 </beans>
