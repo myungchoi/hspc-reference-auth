@@ -28,7 +28,7 @@ public abstract class PersonaUserInfoRepository implements UserInfoRepository {
 
     protected LoadingCache<String, Optional<UserInfo>> userInfoCache;
 
-    @Value("${hspc.platform.sandbox.host} + ${hspc.platform.sandbox.personaInfoPath}")
+    @Value("${hspc.platform.sandbox.host}${hspc.platform.sandbox.personaInfoPath}")
     private String personaInfoEndpoint;
 
     @Value("${hspc.platform.userInfoCacheTimeout:2}")
