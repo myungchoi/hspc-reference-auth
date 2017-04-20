@@ -1,5 +1,6 @@
 package org.hspconsortium.platform.authentication.persona;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
@@ -15,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
  * current real user.
  */
 public class PersonaHttpSessionSecurityContextRepository extends HttpSessionSecurityContextRepository {
+
+    @Value("${hspc.platform.persona.cookieName}")
+    private String personaCookieName;
 
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response) {
@@ -39,7 +43,7 @@ public class PersonaHttpSessionSecurityContextRepository extends HttpSessionSecu
         String personaJwtString = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(PersonaAuthInterceptor.HSPC_PERSONA_TOKEN_NAME)) {
+            if (cookie.getName().equals(personaCookieName)) {
                 personaJwtString = cookie.getValue();
             }
         }

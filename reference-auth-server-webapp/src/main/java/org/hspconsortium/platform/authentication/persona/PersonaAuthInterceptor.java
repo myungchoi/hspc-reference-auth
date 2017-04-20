@@ -1,6 +1,7 @@
 package org.hspconsortium.platform.authentication.persona;
 
 import org.hspconsortium.platform.service.JwtService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +17,11 @@ import java.util.List;
 
 public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
 
-    public static final String HSPC_PERSONA_TOKEN_NAME = "hspc-persona-token";
+    @Value("${hspc.platform.persona.cookieName}")
+    private String personaCookieName;
+
+    @Value("${hspc.platform.persona.cookieDomain}")
+    private String personaCookieDomain;
 
     @Inject
     private JwtService jwtService;
@@ -39,8 +44,7 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
             return;
 
         for (Cookie cookie : httpServletRequest.getCookies()) {
-            if (cookie.getName().equals(HSPC_PERSONA_TOKEN_NAME)) {
-                cookie.setDomain("");
+            if (cookie.getName().equals(personaCookieName)) {
                 cookie.setPath("/");
                 cookie.setMaxAge(0);
                 httpServletResponse.addCookie(cookie);
@@ -52,7 +56,7 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
         Cookie[] cookies = httpServletRequest.getCookies();
         Cookie hspcPersonaTokenCookie = null;
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(HSPC_PERSONA_TOKEN_NAME)) {
+            if (cookie.getName().equals(personaCookieName)) {
                 hspcPersonaTokenCookie = cookie;
             }
         }
