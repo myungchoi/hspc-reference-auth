@@ -93,10 +93,10 @@ public abstract class PersonaUserInfoRepository implements UserInfoRepository {
         UserInfo userInfo = new DefaultUserInfo();
 
         userInfo.setName(userPersonaDto.getName());
-        userInfo.setPreferredUsername(userPersonaDto.getName());
+        userInfo.setPreferredUsername(userPersonaDto.getUsername());
         userInfo.setEmail(userPersonaDto.getUsername());
         userInfo.setSub(userPersonaDto.getUsername());
-        userInfo.setEmail(null);
+        userInfo.setProfile(userPersonaDto.getResourceUrl());
 
         return userInfo;
     }
