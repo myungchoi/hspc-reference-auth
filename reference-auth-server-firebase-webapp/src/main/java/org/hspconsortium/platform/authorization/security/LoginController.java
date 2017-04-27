@@ -8,11 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class LoginController {
 
-    @Value("${oidc.authentication.url}")
+    @Value("${hspc.platform.accountLoginPage}")
     private String loginUrl;
+
+    @Value("${hspc.platform.accountLogoutPage}")
+    private String logoutUrl;
 
     @RequestMapping({"login", "login/"})
     public String doLoginRedirect() {
         return "redirect:" + loginUrl;
+    }
+
+    @RequestMapping({"logout", "logout/"})
+    public String doLogoutRedirect() {
+        return "redirect:" + logoutUrl;
     }
 }
