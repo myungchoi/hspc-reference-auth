@@ -14,13 +14,16 @@ public class FirebaseUserInfoRepository extends PersonaUserInfoRepository {
     @Override
     public UserInfo getRealUserByUsername(String username) {
         // validate username against Firebase
+        FirebaseUserProfileDto firebaseUserProfileDto = firebaseTokenService.getUserProfileInfo(username);
+        if(firebaseUserProfileDto == null)
+            return null;
 
         UserInfo userInfo = new DefaultUserInfo();
 
-        userInfo.setSub(username);
-        userInfo.setPreferredUsername(username);
-        userInfo.setEmail(username);
-        userInfo.setName(username);
+        userInfo.setSub(firebaseUserProfileDto.getEmail());
+        userInfo.setPreferredUsername(firebaseUserProfileDto.getDisplayName());
+        userInfo.setEmail(firebaseUserProfileDto.getEmail());
+        userInfo.setName(firebaseUserProfileDto.getDisplayName());
 
         return userInfo;
     }

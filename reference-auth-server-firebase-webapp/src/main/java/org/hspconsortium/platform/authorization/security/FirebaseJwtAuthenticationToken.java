@@ -12,14 +12,14 @@ public class FirebaseJwtAuthenticationToken extends AbstractAuthenticationToken 
     private String jwt;
     private FirebaseToken firebaseToken;
 
-    public FirebaseJwtAuthenticationToken(String jwt) {
+    public FirebaseJwtAuthenticationToken(){
         super(new ArrayList<GrantedAuthority>());
-        this.jwt = jwt;
     }
 
     public FirebaseJwtAuthenticationToken(FirebaseToken firebaseToken, Collection<GrantedAuthority> authorities) {
         super(authorities);
         this.firebaseToken = firebaseToken;
+        this.setAuthenticated(true);
     }
 
     public void setJwt(String jwt) {
