@@ -9,16 +9,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class FirebaseJwtLoginUrlAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoint {
-    public FirebaseJwtLoginUrlAuthenticationEntryPoint(String loginFormUrl) {
+    public FirebaseJwtLoginUrlAuthenticationEntryPoint(String loginFormUrl, String baseUrl) {
         super(loginFormUrl);
+        this.baseUrl = baseUrl;
     }
+    private String baseUrl;
 
     @Override
     protected String buildRedirectUrlToLoginPage(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         StringBuilder loginFormBuilder = new StringBuilder(determineUrlToUseForThisRequest(request, response, authException));
         try {
             loginFormBuilder.append("?afterAuth=");
-            loginFormBuilder.append(URLEncoder.encode(request.getRequestURL().toString(), "UTF-8"));
+            loginFormBuilder.append(URLEncoder.encode(this.baseUrl + "authorize", "UTF-8"));
             if (request.getQueryString() != null) {
                 loginFormBuilder.append(URLEncoder.encode("?" + request.getQueryString(), "UTF-8"));
             }
