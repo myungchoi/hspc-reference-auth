@@ -40,7 +40,7 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
 
     private void removePersonaCookie(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-        if(httpServletRequest.getCookies() == null)
+        if (httpServletRequest.getCookies() == null)
             return;
 
         for (Cookie cookie : httpServletRequest.getCookies()) {
@@ -54,6 +54,10 @@ public class PersonaAuthInterceptor extends HandlerInterceptorAdapter {
 
     private void authenticatePersonaUser(HttpServletRequest httpServletRequest) {
         Cookie[] cookies = httpServletRequest.getCookies();
+
+        if (cookies == null)
+            return;
+
         Cookie hspcPersonaTokenCookie = null;
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(personaCookieName)) {

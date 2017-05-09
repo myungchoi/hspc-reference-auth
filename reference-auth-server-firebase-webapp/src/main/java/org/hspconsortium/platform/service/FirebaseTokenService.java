@@ -51,7 +51,7 @@ public class FirebaseTokenService {
             String encryptedFirebaseCredentialsString = buffer.lines().collect(Collectors.joining("\n"));
             String firebaseCredentialsString = encryptionService.decrypt(encryptedFirebaseCredentialsString);
             firebaseCredentials = new ByteArrayInputStream(firebaseCredentialsString.getBytes());
-
+            encryptedFirebaseCredentials.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

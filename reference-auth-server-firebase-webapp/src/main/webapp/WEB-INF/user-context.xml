@@ -44,6 +44,8 @@
         <constructor-arg name="baseUrl" value="${oidc.issuer}"/>
     </bean>
 
+    <security:http pattern="/logout/**" security="none"/>
+
     <security:http authentication-manager-ref="authenticationManager" create-session="stateless" use-expressions="true" entry-point-ref="firebaseJwtAuthEntryPoint" >
         <security:intercept-url pattern="/**" access="permitAll"/>
         <security:custom-filter ref="authRequestFilter" after="SECURITY_CONTEXT_FILTER" />
@@ -54,6 +56,7 @@
             <security:frame-options policy="DENY" />
         </security:headers>
     </security:http>
+
 
     <bean id="customFilters" class="org.springframework.web.filter.CompositeFilter">
         <property name="filters">
