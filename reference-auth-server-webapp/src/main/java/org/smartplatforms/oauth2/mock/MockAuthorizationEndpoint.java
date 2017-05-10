@@ -11,8 +11,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smartplatforms.oauth2.LaunchContextResolver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -35,9 +33,6 @@ import java.util.Map;
 @Controller
 public class MockAuthorizationEndpoint {
 
-	@Autowired
-	private LaunchContextResolver launchContextResolver;
-
 	private static Logger logger = LoggerFactory.getLogger(MockAuthorizationEndpoint.class);
 
 	@Value("${mock.endpoints.enabled}")
@@ -51,59 +46,36 @@ public class MockAuthorizationEndpoint {
 			throw new EndpointDisabledException();
 		}
 
-		String aud = parameters.get("aud");
-		String[] serviceURLs = launchContextResolver.getServiceURL();
+		String fileName = this.getClass().getClassLoader().getResource("openid-connect-jwks/mock.only.keystore.jwks").getFile();
 
-		if (aud != null && aud.endsWith("/")) {
-			aud = aud.substring(0, aud.length() - 1);
+		JWKSet jwks = JWKSet.load(new File(fileName));
+		RSAKey rsaKey = (RSAKey) jwks.getKeys().get(0);
+		// Create RSA-signer with the private key
+		JWSSigner signer = new RSASSASigner(rsaKey.toRSAPrivateKey());
+
+		String launchContext = "";
+		if (parameters.containsKey("launch")) {
+			launchContext = java.net.URLDecoder.decode(parameters.get("launch"), StandardCharsets.UTF_8.name());
 		}
 
-		boolean validAud = false;
-		for (String serviceURL : serviceURLs) {
-			if (serviceURL != null && serviceURL.endsWith("/")) {
-				serviceURL = serviceURL.substring(0, serviceURL.length() - 1);
-			}
-			if (aud != null && aud.startsWith(serviceURL)) {
-				validAud = true;
-			}
-		}
+		// Prepare JWT with claims set
+		JWTClaimsSet claimsSet = new JWTClaimsSet();
+		claimsSet.setClaim("context", launchContext);
+		claimsSet.setClaim("client_id", parameters.get("client_id"));
+		claimsSet.setClaim("scope", parameters.get("scope"));
+		claimsSet.setExpirationTime(new Date(new Date().getTime() + 5 * 60 * 1000)); //5 min
 
-		if (!validAud) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		} else {
+		SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
 
-			String fileName = this.getClass().getClassLoader().getResource("openid-connect-jwks/mock.only.keystore.jwks").getFile();
+		// Compute the RSA signature
+		signedJWT.sign(signer);
 
-			JWKSet jwks = JWKSet.load(new File(fileName));
-			RSAKey rsaKey = (RSAKey) jwks.getKeys().get(0);
-			// Create RSA-signer with the private key
-			JWSSigner signer = new RSASSASigner(rsaKey.toRSAPrivateKey());
-
-			String launchContext = "";
-			if (parameters.containsKey("launch")) {
-				launchContext = java.net.URLDecoder.decode(parameters.get("launch"), StandardCharsets.UTF_8.name());
-			}
-
-			// Prepare JWT with claims set
-			JWTClaimsSet claimsSet = new JWTClaimsSet();
-			claimsSet.setClaim("context", launchContext);
-			claimsSet.setClaim("client_id", parameters.get("client_id"));
-			claimsSet.setClaim("scope", parameters.get("scope"));
-			claimsSet.setExpirationTime(new Date(new Date().getTime() + 5 * 60 * 1000)); //5 min
-
-			SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
-
-			// Compute the RSA signature
-			signedJWT.sign(signer);
-
-			// build the response redirect
-			response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
-			response.setHeader("Location", parameters.get("redirect_uri") +
-					"?code=" + signedJWT.serialize() +
-					"&state=" + parameters.get("state")
-			);
-
-		}
+		// build the response redirect
+		response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+		response.setHeader("Location", parameters.get("redirect_uri") +
+				"?code=" + signedJWT.serialize() +
+				"&state=" + parameters.get("state")
+		);
 	}
 
 	@ExceptionHandler(EndpointDisabledException.class)
