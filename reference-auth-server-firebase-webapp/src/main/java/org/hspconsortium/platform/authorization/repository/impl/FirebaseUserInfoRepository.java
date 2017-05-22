@@ -20,8 +20,8 @@ public class FirebaseUserInfoRepository extends PersonaUserInfoRepository {
 
         UserInfo userInfo = new DefaultUserInfo();
 
-        userInfo.setSub(firebaseUserProfileDto.getEmail());
-        userInfo.setPreferredUsername(firebaseUserProfileDto.getDisplayName());
+        userInfo.setSub(firebaseUserProfileDto.getUid());
+        userInfo.setPreferredUsername(firebaseUserProfileDto.getEmail());
         userInfo.setEmail(firebaseUserProfileDto.getEmail());
         userInfo.setName(firebaseUserProfileDto.getDisplayName());
 
