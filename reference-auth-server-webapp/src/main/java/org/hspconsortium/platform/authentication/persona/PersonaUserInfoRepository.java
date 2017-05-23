@@ -7,6 +7,8 @@ import com.google.common.cache.LoadingCache;
 import org.mitre.openid.connect.model.DefaultUserInfo;
 import org.mitre.openid.connect.model.UserInfo;
 import org.mitre.openid.connect.repository.UserInfoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,6 +25,8 @@ public abstract class PersonaUserInfoRepository implements UserInfoRepository {
 
     public static final String ANONYMOUS_USER = "anonymousUser";
     public static final String PERSONA_USERNAME_REGEX = "\\A[a-zA-Z0-9]{1,50}@[a-zA-Z0-9]{1,20}\\Z";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonaUserInfoRepository.class);
 
     Pattern personaPattern = Pattern.compile(PERSONA_USERNAME_REGEX);
 
@@ -86,7 +90,9 @@ public abstract class PersonaUserInfoRepository implements UserInfoRepository {
 
         try {
             userPersonaDto = restTemplate.getForObject(personaInfoEndpoint + username, UserPersonaDto.class);
+            LOGGER.info("Found: " + userPersonaDto);
         } catch (Exception ex) {
+            LOGGER.error("Error fetchUserInfoForPersona: " + username);
             return null;
         }
 

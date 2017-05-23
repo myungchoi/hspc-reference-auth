@@ -28,4 +28,13 @@ public class UserPersonaDto {
     public void setResourceUrl(String resourceUrl) {
         this.resourceUrl = resourceUrl;
     }
+
+    @Override
+    public String toString() {
+        return "UserPersonaDto{" +
+                "username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", resourceUrl='" + resourceUrl + '\'' +
+                '}';
+    }
 }
