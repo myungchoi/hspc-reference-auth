@@ -87,7 +87,9 @@ public class SmartAuthorizationEndpoint extends AuthorizationEndpoint implements
 			resolveParams += doubleEncode(goals)+ "/against/";
 			resolveParams += doubleEncode((String)mv.getModel().get("aud"))+ "/for/";
 			resolveParams += doubleEncode(client.getClientName())+ "/then/";
-			resolveParams += doubleEncode(configBean.getIssuer() + "authorize?" + getCurrentRequestUrl(authorizationRequest));
+			resolveParams += doubleEncode(
+                    (configBean.getIssuer().endsWith("/") ? configBean.getIssuer() : configBean.getIssuer() + "/")
+                            + "authorize?" + getCurrentRequestUrl(authorizationRequest));
 
 			String url = null;
 			try {

@@ -56,8 +56,10 @@ public class MockLaunchContextEndpoint {
 
 		logger.warn("About to redirect to context resolver UI");
 
+		String issuerContext = (configBean.getIssuer().endsWith("/") ? configBean.getIssuer() : configBean.getIssuer() + "/");
+
 		if (patients.equalsIgnoreCase("none")) {
-			String url = configBean.getIssuer() + "mock/after_picker?iss=";
+			String url = issuerContext + "mock/after_picker?iss=";
 			url += URLDecoder.decode(aud, UTF8) + "&launch_uri=";
 			url += URLDecoder.decode(launch_uri, UTF8) + "&context_params=";
 			url += URLDecoder.decode(context_params, UTF8) + "&patient_id=";
@@ -71,7 +73,7 @@ public class MockLaunchContextEndpoint {
 			resolveParams += URLEncoder.encode(context_params, UTF8) + "/and/";
 			resolveParams += URLEncoder.encode(patients, UTF8) + "/show/";
 			resolveParams += URLEncoder.encode(show_patient_id, UTF8) + "/then/";
-			resolveParams += doubleEncode(configBean.getIssuer() + "mock/after_picker");
+			resolveParams += doubleEncode(issuerContext + "mock/after_picker");
 
 			String url = null;
 			try {
