@@ -89,8 +89,9 @@ public abstract class PersonaUserInfoRepository implements UserInfoRepository {
         UserPersonaDto userPersonaDto;
 
         try {
+            LOGGER.warn("Retrieving persona at path: " + personaInfoEndpoint + username);
             userPersonaDto = restTemplate.getForObject(personaInfoEndpoint + username, UserPersonaDto.class);
-            LOGGER.info("Found: " + userPersonaDto);
+            LOGGER.warn("Found: " + userPersonaDto);
         } catch (Exception ex) {
             LOGGER.error("Error fetchUserInfoForPersona: " + username);
             return null;
