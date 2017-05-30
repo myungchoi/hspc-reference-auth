@@ -8,6 +8,7 @@ import org.mitre.openid.connect.repository.impl.JpaUserInfoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,8 +33,10 @@ import java.util.List;
 
 public class FirebaseJwtFilter extends GenericFilterBean {
 
-    public static final String COOKIE_NAME = "hspc-token";
     private final Logger log = LoggerFactory.getLogger(FirebaseJwtFilter.class);
+
+    @Value("${hspc.platform.auth.cookieName}")
+    private String cookieName;
 
     @Inject
     private FirebaseTokenService firebaseTokenService;
@@ -109,7 +112,7 @@ public class FirebaseJwtFilter extends GenericFilterBean {
             return null;
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(COOKIE_NAME)) {
+            if (cookie.getName().equals(cookieName)) {
                 return cookie.getValue();
             }
         }
