@@ -128,27 +128,17 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.5</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <overlays>
-                        <overlay>
-                            <groupId>org.hspconsortium.reference</groupId>
-                            <artifactId>hspc-reference-auth-server-webapp</artifactId>
-                        </overlay>
-                    </overlays>
-                </configuration>
+                <version>2.6</version>
+                <overlays>
+                    <overlay>
+                        <groupId>org.hspconsortium.reference</groupId>
+                        <artifactId>hspc-reference-auth-server-webapp</artifactId>
+                    </overlay>
+                </overlays>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -156,6 +146,17 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.5.v20170502</version>
+                <configuration>
+                    <jettyXml>src/main/resources/jetty.xml</jettyXml>
+                    <webAppConfig>
+                        <allowDuplicateFragmentNames>true</allowDuplicateFragmentNames>
+                    </webAppConfig>
                 </configuration>
             </plugin>
         </plugins>
