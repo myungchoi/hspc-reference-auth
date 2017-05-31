@@ -133,12 +133,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.6</version>
-                <overlays>
-                    <overlay>
-                        <groupId>org.hspconsortium.reference</groupId>
-                        <artifactId>hspc-reference-auth-server-webapp</artifactId>
-                    </overlay>
-                </overlays>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <overlays>
+                        <overlay>
+                            <groupId>org.hspconsortium.reference</groupId>
+                            <artifactId>hspc-reference-auth-server-webapp</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
