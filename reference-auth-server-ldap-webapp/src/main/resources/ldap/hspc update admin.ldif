@@ -31,7 +31,7 @@ objectClass: pwmUser
 cn: demo
 sn: User
 userPassword:demo
-labeledURI: https://sandbox.hspconsortium.org/dstu2/hspc-reference-api/data/P
+labeledURI: https://api.hspconsortium.org/hspc/data/P
  ractitioner/demo/_history/1
 userPassword:: e1NTSEF9QnVhcG9HR0tJZGZHcHJmTUZqajNOOUk3TGppUzI0WDUzTmd4QlE9P
  Q==
