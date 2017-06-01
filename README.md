@@ -48,7 +48,7 @@ Create User account/ Group etc...
     deploy reference-auth-server-ldap-webapp/target/hspc-reference-authorization.war to Tomcat
 
 ### Verify
-* http://localhost:8080/hspc-reference-authorization/
+* http://localhost:8060/
 
 ## Where to go from here
 https://healthservices.atlassian.net/wiki/display/HSPC/Healthcare+Services+Platform+Consortium
